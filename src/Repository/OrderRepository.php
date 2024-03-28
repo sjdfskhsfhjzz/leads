@@ -13,6 +13,8 @@ class OrderRepository
     {
         $this->pdo = $pdo;
     }
+
+    //ОТСУТСВУЕТ ОБРАБОТКА ОШИБОК НА СЛУЧАЙ, ЕСЛИ ЧТО-ТО ПОЙДЕТ НЕ ТАК (try, catch)
     public function save(Order $order)
     {
         $sql = "INSERT INTO orders (id, sum, contractor_type) VALUES ({$order->id}, {$order->sum}, {$order->contractorType})";
@@ -24,19 +26,24 @@ class OrderRepository
             $stmt->execute();
         }
     }
+
+    //ОТСУТСВУЕТ ОБРАБОТКА ОШИБОК НА СЛУЧАЙ, ЕСЛИ ЧТО-ТО ПОЙДЕТ НЕ ТАК (try, catch)
     /** @return Order */
     public function get($orderId)
     {
+        //НЕ КРИТИЧНО, НО ВОЗМОЖНО ЛУЧШЕ БУДЕТ ИСПОЛЬЗОВАТЬ ЛИБО ГОТОВОЕ РЕШЕНИЕ ДЛЯ ЗАПРОСОВ К БАЗЕ (например EntityManager в Symphony)
         $sql = "SELECT * FROM orders WHERE id={$orderId} LIMIT 1";
         $stmt = $this->pdo->prepare($sql);
         $data = $stmt->fetch();
         $order = new Order($data['id']);
-        $order->contractorType = $data['contractor_type'];
+        $order->contractorType = $data['contractor_type']; //ЛУЧШЕ ВЫНЕСТИ КОНСТАНТЫ В ИНТЕРФЕЙС, КОТОРЫЙ СОЗДАТЬ ДЛЯ ЗАКАЗА
         $order->isPaid = $data['is_paid'];
         $order->sum = $data['sum'];
         $order->items = $this->getOrderItems($data['id']);
         return $order;
     }
+
+    //ОТСУТСВУЕТ ОБРАБОТКА ОШИБОК НА СЛУЧАЙ, ЕСЛИ ЧТО-ТО ПОЙДЕТ НЕ ТАК (try, catch)
     /** @return Order[] */
     public function last($limit = 10)
     {
@@ -55,6 +62,8 @@ class OrderRepository
         }
         return $orders;
     }
+
+    //ЭТОТ МЕТОД ЛОГИЧНЕЙ БУДЕТ ПЕРЕНЕСТИ В КЛАСС \App\Entity\Order
     public function getOrderItems($orderId)
     {
         $sql = "SELECT * FROM order_products WHERE order_id={$orderId}";

@@ -14,6 +14,7 @@ class OrderFactory
     {
         $this->pdo = $pdo;
     }
+    //ЭТОТ МЕТОД ЛОГИЧНЕЙ БУДЕТ ПЕРЕНЕСТИ В РЕПОЗИТОРИЙ, НАПРИМЕР
     public function generateOrderId()
     {
         $sql = "SELECT id FROM order1s ORDER BY createdAt DESC LIMIT 1";
@@ -23,6 +24,8 @@ class OrderFactory
     public function createOrder($data, $id)
     {
         $order = new Order($id);
+
+        //СЛЕДУЩИЙ КОД ДЛЯ ЧИСТОТЫ КОДА ЛУЧШЕ ВЫНЕСТИ В ОТДЕЛЬНУЮ ФУНКЦИЮ. К ПРИМЕРУ СОЗДАТЬ ФУНКЦИЮ setItems()
         foreach ($data as $key => $value)
         {
             if ($key == 'items')
@@ -36,5 +39,7 @@ class OrderFactory
             $order->{$key} = $value;
         }
         return $order;
+
+        //ОТСУТСВУЕТ ОБРАБОТКА ОШИБОК НА СЛУЧАЙ, ЕСЛИ ЧТО-ТО ПОЙДЕТ НЕ ТАК (try, catch)
     }
 }

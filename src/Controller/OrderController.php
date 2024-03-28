@@ -21,7 +21,7 @@ class OrderController
                                 OrderRepository $order_repository)
     {
         $this->order_factory = $order_factory;
-        $this->order_repository = $order_repository;
+        $this->order_repository = $order_repository; //ЕСЛИ ПРИДЕРЖИВАТЬСЯ PSR - ТО НУЖЕН camelCase ДЛЯ ПЕРЕМЕННЫХ
     }
     /**
      * @Route("/create", methods={"POST"})
@@ -29,7 +29,7 @@ class OrderController
     public function create(Request $request)
     {
         $orderData = json_decode($request->getContent(), true);
-        $orderId = $this->order_factory->generateOrderId();
+        $orderId = $this->order_factory->generateOrderId(); //ДЛЯ ИЗБЕЖАНИЯ КОЛЛИЗИЙ ЛУЧШЕ ГЕНЕРИРОВАТЬ INCREMENT_ID УЖЕ ПОСЛЕ СОЗДАНИЯ ЗАКАЗА В БАЗЕ, ПОЛУЧАЯ В ОТВЕТЕ ID-ШНИК И СОХРАНЯТЬ ПОСЛЕ ЭТОГО ПОЛУЧЕННОЕ ЗНАЧЕНИЕ ДЛЯ INCREMENT_ID
         try {
             $order = $this->order_factory->createOrder($orderData,
                 $orderId);
@@ -60,6 +60,7 @@ class OrderController
         } else {
             return new Response("You haven't paid bill yet");
         }
+        //ОТСУТСВУЕТ ОБРАБОТКА ОШИБОК НА СЛУЧАЙ, ЕСЛИ ЧТО-ТО ПОЙДЕТ НЕ ТАК (try, catch)
     }
     /**
      * @Route("/last", methods={"GET"})
@@ -69,5 +70,6 @@ class OrderController
         $limit = $request->get("limit");
         $orders = $this->order_repository->last($limit);
         return new JsonResponse($orders);
+        //ОТСУТСВУЕТ ОБРАБОТКА ОШИБОК НА СЛУЧАЙ, ЕСЛИ ЧТО-ТО ПОЙДЕТ НЕ ТАК (try, catch)
     }
 }

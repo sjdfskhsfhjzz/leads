@@ -1,5 +1,7 @@
 <?php
 namespace App\Entity;
+
+//КОЕ-ГДЕ ОТСУТСТВУЕТ ТИПИЗАЦИЯ
 class Item
 {
     /** @var string */
